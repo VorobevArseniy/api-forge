@@ -1,0 +1,21 @@
+package {{ .PackageName }}
+
+import (
+    "context"
+    "yourproject/api/models"
+)
+
+// Service - заглушка реализации сервиса
+type Service struct{}
+
+{{ range .Endpoints }}
+    // {{ .Name }} - заглушка метода
+    func (s *Service) {{ .Name }}(ctx context.Context, req *models.{{ .Name }}Request) (*models.{{ .Name }}Response, error) {
+        // TODO: реализовать логику
+        return &models.{{ .Name }}Response{
+            {{- range $field, $type := .Response }}
+            {{ $field | ToCamel }}: {{ if eq $type "string" }}""{{ else }}0{{ end }}, // TODO: заменить на реальные данные
+            {{- end }}
+        }, nil
+    }
+{{ end }}
