@@ -37,13 +37,11 @@ func main() {
 		log.Fatalf("Failed to parse YAML spec: %v", err)
 	}
 
-	// Конфигурация генератора
-
 	// Инициализация генератора
 	gen := generator.New(spec, *outputDir, *routerType, *projectModule)
 
 	// Выполнение всех генераций
-	if err := gen.Generate(); err != nil {
+	if err := gen.Run(); err != nil {
 		log.Fatalf("Generation failed: %v", err)
 	}
 

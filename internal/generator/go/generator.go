@@ -24,6 +24,20 @@ func New(spec *spec.Spec, outputDir, routerType, moduleName string) *Generator {
 	}
 }
 
+func (g *Generator) Run() error {
+	if err := g.Generate(); err != nil {
+		return err
+	}
+
+	if !isGoInstalled() {
+		fmt.Println("Warning: go command not found, skipping formatting")
+		return nil
+	}
+
+	fmt.Println("Formatting generated Go code...")
+	return g.FormatGoCode()
+}
+
 func (g *Generator) Generate() error {
 	if err := g.InitGoModule(); err != nil {
 		return err
@@ -93,4 +107,27 @@ func (g *Generator) createDirs() error {
 		}
 	}
 	return nil
+}
+
+func (g *Generator) FormatGoCode() error {
+	absPath, err := filepath.Abs(g.outputDir)
+	if err != nil {
+		return fmt.Errorf("failed to get absolute path: %w", err)
+	}
+
+	// Запускаем go fmt для всей директории
+	cmd := exec.Command("go", "fmt", "./...")
+	cmd.Dir = absPath
+
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("go fmt failed: %s\n%w", string(output), err)
+	}
+
+	return nil
+}
+
+func isGoInstalled() bool {
+	_, err := exec.LookPath("go")
+	return err == nil
 }
