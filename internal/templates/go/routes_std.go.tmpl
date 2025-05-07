@@ -13,7 +13,7 @@ func SetupRoutes(mux *http.ServeMux) {
         {{ $handlerVar := printf "%sHandler" (ToLower $svcName) }}
         {{ $handlerVar }} := &api.{{ $svcName | ToTitle }}Handler{}
         {{ range $epName, $ep := $svc.Endpoints }}
-            mux.HandleFunc("{{ $ep.Path }}", {{ $handlerVar }}.{{ $epName | ToTitle }})
+            mux.HandleFunc("{{$ep.Method}} {{ $ep.Path }}", {{ $handlerVar }}.{{ $epName | ToTitle }})
         {{ end }}
     {{ end }}
 }
