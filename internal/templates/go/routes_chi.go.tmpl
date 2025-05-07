@@ -3,7 +3,7 @@ package routes
 
 import (
     "github.com/go-chi/chi/v5"
-    "yourproject/api"
+    "{{ .ModuleName }}/api"
 )
 
 // SetupRoutes - регистрация всех роутов Chi
@@ -11,9 +11,9 @@ func SetupRoutes(r chi.Router) {
     {{ range $svcName, $svc := .Services }}
         // {{ $svcName }} routes
         {{ $handlerVar := printf "%sHandler" (ToLower $svcName) }}
-        {{ $handlerVar }} := &api.{{ $svcName }}Handler{}
+        {{ $handlerVar }} := &api.{{ $svcName | ToTitle }}Handler{}
         {{ range $epName, $ep := $svc.Endpoints }}
-            r.Method("{{ $ep.Method }}", "{{ $ep.Path }}", {{ $handlerVar }}.{{ $epName }})
+            r.{{ $ep.Method | ToTitle}}("{{ $ep.Path }}", {{ $handlerVar }}.{{ $epName | ToTitle }})
         {{ end }}
     {{ end }}
 }
