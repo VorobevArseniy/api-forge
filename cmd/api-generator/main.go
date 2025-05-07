@@ -13,9 +13,9 @@ import (
 func main() {
 	// Парсинг флагов командной строки
 	inputFile := flag.String("input", "", "Path to YAML specification file")
-	outputDir := flag.String("output", "./generated", "Output directory for generated files")
-	routerType := flag.String("router", "chi", "Router type (chi or std)")
-	projectModule := flag.String("module", "", "Go module path (e.g. 'github.com/username/project')")
+	outputDir := flag.String("output", "./server", "Output directory for generated files")
+	routerType := flag.String("router", "std", "Router type (chi or std)")
+	projectModule := flag.String("module", "server", "Go module path (e.g. 'github.com/username/project')")
 	flag.Parse()
 
 	// Валидация обязательных параметров
@@ -40,7 +40,7 @@ func main() {
 	// Конфигурация генератора
 
 	// Инициализация генератора
-	gen := generator.New(spec, *outputDir, *routerType)
+	gen := generator.New(spec, *outputDir, *routerType, *projectModule)
 
 	// Выполнение всех генераций
 	if err := gen.Generate(); err != nil {

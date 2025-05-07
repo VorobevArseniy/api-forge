@@ -4,6 +4,7 @@ import (
 	"api-generator/pkg/spec"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 )
 
@@ -11,17 +12,23 @@ type Generator struct {
 	spec       *spec.Spec
 	outputDir  string
 	routerType string
+	moduleName string
 }
 
-func New(spec *spec.Spec, outputDir, routerType string) *Generator {
+func New(spec *spec.Spec, outputDir, routerType, moduleName string) *Generator {
 	return &Generator{
 		spec:       spec,
 		outputDir:  outputDir,
 		routerType: routerType,
+		moduleName: moduleName,
 	}
 }
 
 func (g *Generator) Generate() error {
+	if err := g.InitGoModule(); err != nil {
+		return err
+	}
+
 	if err := g.createDirs(); err != nil {
 		return err
 	}
@@ -38,7 +45,39 @@ func (g *Generator) Generate() error {
 		return err
 	}
 
-	return g.GenerateMain()
+	if err := g.GenerateMain(); err != nil {
+		return err
+	}
+
+	return g.RunGoModTidy()
+}
+
+func (g *Generator) InitGoModule() error {
+	if g.moduleName == "" {
+		return fmt.Errorf("project module path is required")
+	}
+
+	cmd := exec.Command("go", "mod", "init", g.moduleName)
+	cmd.Dir = g.outputDir
+
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("go mod init failed: %s\n%w", string(output), err)
+	}
+
+	return nil
+}
+
+func (g *Generator) RunGoModTidy() error {
+	cmd := exec.Command("go", "mod", "tidy")
+	cmd.Dir = g.outputDir
+
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("go mod tidy failed: %s\n%w", string(output), err)
+	}
+
+	return nil
 }
 
 func (g *Generator) createDirs() error {

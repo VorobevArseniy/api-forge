@@ -16,9 +16,11 @@ func (g *Generator) GenerateMain() error {
 	data := struct {
 		RouterType string
 		Services   map[string]spec.Service
+		ModuleName string
 	}{
 		g.routerType,
 		g.spec.Services,
+		g.moduleName,
 	}
 
 	content, err := templates.Render(tmpl, data)

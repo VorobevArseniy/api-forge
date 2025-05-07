@@ -25,9 +25,11 @@ func (g *Generator) GenerateInternalStubs() error {
 		data := struct {
 			PackageName string
 			Endpoints   []EndpointTemplate
+			ModuleName  string
 		}{
 			PackageName: strings.ToLower(svcName),
 			Endpoints:   convertEndpoints(svc.Endpoints),
+			ModuleName:  g.moduleName,
 		}
 
 		// Генерируем и записываем файл
