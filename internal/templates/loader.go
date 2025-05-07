@@ -21,9 +21,11 @@ func Load(name string) (*template.Template, error) {
 	caser := cases.Title(language.English)
 
 	tmpl := template.New(name).Funcs(template.FuncMap{
-		"title":   caser.String,
-		"toLower": strings.ToLower,
-		"goType": func(s string) string {
+		"ToTitle": caser.String,
+		"ToLower": strings.ToLower,
+		"ToCamel": toCamelCase,
+		"toCamel": toCamelCase,
+		"ToGoType": func(s string) string {
 			switch s {
 			case "string":
 				return "string"
@@ -36,4 +38,16 @@ func Load(name string) (*template.Template, error) {
 	})
 
 	return tmpl.Parse(string(data))
+}
+
+func toCamelCase(s string) string {
+	words := strings.FieldsFunc(s, func(r rune) bool {
+		return r == '_' || r == '-'
+	})
+
+	for i := 1; i < len(words); i++ {
+		words[i] = cases.Title(language.English).String(words[i])
+	}
+
+	return strings.Join(words, "")
 }

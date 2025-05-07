@@ -28,6 +28,6 @@ func (g *Generator) GenerateRoutes() error {
 		return fmt.Errorf("failed to render routes: %w", err)
 	}
 
-	filename := filepath.Join(g.outputDir, fmt.Sprintf("routes_%s.go", g.routerType))
+	filename := filepath.Join(g.outputDir, fmt.Sprintf("routes/routes_%s.go", g.routerType))
 	return os.WriteFile(filename, content, 0644)
 }

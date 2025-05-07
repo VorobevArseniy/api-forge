@@ -9,7 +9,7 @@ import (
 )
 
 func (g *Generator) GenerateInternalStubs() error {
-	tmpl, err := templates.Load("go/internal_stub.go.tmpl")
+	tmpl, err := templates.Load("go/internal_stubs.go.tmpl")
 	if err != nil {
 		return err
 	}

@@ -10,11 +10,11 @@ type Service struct{}
 
 {{ range .Endpoints }}
     // {{ .Name }} - заглушка метода
-    func (s *Service) {{ .Name }}(ctx context.Context, req *models.{{ .Name }}Request) (*models.{{ .Name }}Response, error) {
+    func (s *Service) {{ .Name }}(ctx context.Context, req *api.{{ .Name | ToTitle}}Request) (*api.{{ .Name | ToTitle }}Response, error) {
         // TODO: реализовать логику
-        return &models.{{ .Name }}Response{
+        return &api.{{ .Name | ToTitle}}Response{
             {{- range $field, $type := .Response }}
-            {{ $field | ToCamel }}: {{ if eq $type "string" }}""{{ else }}0{{ end }}, // TODO: заменить на реальные данные
+            {{ $field | ToTitle }}: {{ if eq $type "string" }}""{{ else }}0{{ end }}, // TODO: заменить на реальные данные
             {{- end }}
         }, nil
     }
