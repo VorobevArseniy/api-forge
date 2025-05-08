@@ -2,7 +2,7 @@ package templates
 
 import (
 	"bytes"
-	"html/template"
+	"text/template"
 )
 
 func Render(tmpl *template.Template, data any) ([]byte, error) {

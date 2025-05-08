@@ -8,18 +8,30 @@ import (
 
 {{ range $svcName, $svc := .Services }}
     // {{ $svcName }}Handler - обработчик HTTP-запросов для {{ $svcName }}
-    type {{ $svcName | ToTitle }}Handler struct {
-        svc {{ $svcName | ToTitle }}Service
+
+    {{ $handlerVar := printf "%sHandler" (ToTitle $svcName) }}
+    {{ $serviceVar := printf "%sService" (ToTitle $svcName) }}
+    type {{ $handlerVar }} struct {
+        Svc {{ $serviceVar }}
+    }
+
+    func New{{ $handlerVar }}(svc {{ $serviceVar }}) *{{ $handlerVar }} {
+        return &{{ $handlerVar }} {
+            Svc: svc,
+        }
     }
 
     {{ range $epName, $ep := $svc.Endpoints }}
         // {{ $epName }} - обработчик {{ $ep.Method }} {{ $ep.Path }}
-        func (h *{{ $svcName | ToTitle }}Handler) {{ $epName | ToTitle }}(w http.ResponseWriter, r *http.Request) {
+        func (h *{{ $handlerVar }}) {{ $epName | ToTitle }}(w http.ResponseWriter, r *http.Request) {
             var req {{ $epName | ToTitle }}Request
+
+            {{ if $ep.Request }}
             if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
                 http.Error(w, "Invalid JSON", http.StatusBadRequest)
                 return
             }
+            {{ end }}
 
             {{ if $ep.Query }}
             // Парсинг query-параметров
@@ -31,7 +43,7 @@ import (
             {{ end }}
             {{ end }}
 
-            resp, err := h.svc.{{ $epName | ToTitle }}(r.Context(), &req)
+            resp, err := h.Svc.{{ $epName | ToTitle }}(r.Context(), &req)
             if err != nil {
                 http.Error(w, err.Error(), http.StatusInternalServerError)
                 return

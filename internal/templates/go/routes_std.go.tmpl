@@ -3,7 +3,11 @@ package routes
 
 import (
     "net/http"
+
     "{{ .ModuleName }}/api"
+    {{ range $svcName, $svc := .Services }}
+    "{{ $.ModuleName }}/internal/{{ $svcName }}"
+    {{ end }}
 )
 
 // SetupRoutes - регистрация роутов stdlib
@@ -11,7 +15,11 @@ func SetupRoutes(mux *http.ServeMux) {
     {{ range $svcName, $svc := .Services }}
         // {{ $svcName }} routes
         {{ $handlerVar := printf "%sHandler" (ToLower $svcName) }}
-        {{ $handlerVar }} := &api.{{ $svcName | ToTitle }}Handler{}
+        {{ $serviceVar := printf "%sService" (ToLower $svcName) }}
+
+        {{ $serviceVar }} := {{ $svcName }}.New()
+        {{ $handlerVar }} := api.New{{ $svcName | ToTitle }}Handler({{ $serviceVar }})
+
         {{ range $epName, $ep := $svc.Endpoints }}
             mux.HandleFunc("{{$ep.Method}} {{ $ep.Path }}", {{ $handlerVar }}.{{ $epName | ToTitle }})
         {{ end }}

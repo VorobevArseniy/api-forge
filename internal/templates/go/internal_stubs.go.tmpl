@@ -8,9 +8,13 @@ import (
 // Service - заглушка реализации сервиса
 type Service struct{}
 
+func New() *Service {
+    return &Service{}
+}
+
 {{ range .Endpoints }}
     // {{ .Name }} - заглушка метода
-    func (s *Service) {{ .Name }}(ctx context.Context, req *api.{{ .Name | ToTitle}}Request) (*api.{{ .Name | ToTitle }}Response, error) {
+    func (s *Service) {{ .Name | ToTitle }}(ctx context.Context, req *api.{{ .Name | ToTitle}}Request) (*api.{{ .Name | ToTitle }}Response, error) {
         // TODO: реализовать логику
         return &api.{{ .Name | ToTitle}}Response{
             {{- range $field, $type := .Response }}

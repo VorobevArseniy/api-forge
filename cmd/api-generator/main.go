@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"api-generator/internal/config"
-	generator "api-generator/internal/generator/go"
+	"api-generator/internal/generator/go"
 )
 
 func main() {
@@ -15,7 +15,7 @@ func main() {
 	inputFile := flag.String("input", "", "Path to YAML specification file")
 	outputDir := flag.String("output", "./server", "Output directory for generated files")
 	routerType := flag.String("router", "std", "Router type (chi or std)")
-	projectModule := flag.String("module", "server", "Go module path (e.g. 'github.com/username/project')")
+	projectModule := flag.String("name", "server", "Go module path (e.g. 'github.com/username/project')")
 	flag.Parse()
 
 	// Валидация обязательных параметров
@@ -23,7 +23,7 @@ func main() {
 		log.Fatal("Error: input YAML file path is required")
 	}
 	if *projectModule == "" {
-		log.Fatal("Error: project module path is required")
+		log.Fatal("Error: project module name is required")
 	}
 
 	// Создание выходной директории

@@ -2,8 +2,8 @@ package templates
 
 import (
 	"embed"
-	"html/template"
 	"strings"
+	"text/template"
 
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"

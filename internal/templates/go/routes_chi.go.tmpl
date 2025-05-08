@@ -2,16 +2,24 @@
 package routes
 
 import (
-    "github.com/go-chi/chi/v5"
     "{{ .ModuleName }}/api"
+    {{ range $svcName, $svc := .Services }}
+    "{{ $.ModuleName }}/internal/{{ $svcName }}"
+    {{ end }}
+
+    "github.com/go-chi/chi/v5"
 )
 
 // SetupRoutes - регистрация всех роутов Chi
 func SetupRoutes(r chi.Router) {
     {{ range $svcName, $svc := .Services }}
         // {{ $svcName }} routes
-        {{ $handlerVar := printf "%sHandler" (ToLower $svcName) }}
-        {{ $handlerVar }} := &api.{{ $svcName | ToTitle }}Handler{}
+        {{ $handlerVar := printf "%sHandler" ($svcName) }}
+        {{ $serviceVar := printf "%sService" (ToLower $svcName) }}
+
+        {{ $serviceVar }} := {{ $svcName }}.New()
+        {{ $handlerVar }} := api.New{{ $svcName | ToTitle }}Handler({{ $serviceVar }})
+
         {{ range $epName, $ep := $svc.Endpoints }}
             r.{{ $ep.Method | ToTitle}}("{{ $ep.Path }}", {{ $handlerVar }}.{{ $epName | ToTitle }})
         {{ end }}
