@@ -18,7 +18,7 @@ func New() *Service {
         // TODO: реализовать логику
         return &api.{{ .Name | ToTitle}}Response{
             {{- range $field, $type := .Response }}
-            {{ $field | ToTitle }}: {{ if eq $type "string" }}""{{ else }}0{{ end }}, // TODO: заменить на реальные данные
+            {{ $field | ToPascal }}: {{ if eq $type "string" }}""{{ else }}0{{ end }}, // TODO: заменить на реальные данные
             {{- end }}
         }, nil
     }
