@@ -6,12 +6,12 @@ package api
         // {{ $epName }}Request - входные данные для {{ $svcName }}.{{ $epName }}
         type {{ $epName | ToTitle }}Request struct {
             {{- range $field, $type := $ep.Request }}
-            {{ $field | ToTitle }} {{ $type | ToGoType }} `json:"{{ $field | ToCamel }}"`
+            {{ $field | ToPascal }} {{ $type | ToGoType }} `json:"{{ $field | ToSnake }}"`
             {{- end }}
             {{- if $ep.Query }}
             // Query-параметры
             {{- range $param, $type := $ep.Query }}
-            {{ $param | ToTitle }} {{ $type | ToGoType }} `json:"-" url:"{{ $param }}"`
+            {{ $param | ToPascal }} {{ $type | ToGoType }} `json:"-" url:"{{ $param }}"`
             {{- end }}
             {{- end }}
         }
@@ -19,7 +19,7 @@ package api
         // {{ $epName }}Response - ответ от {{ $svcName }}.{{ $epName }}
         type {{ $epName | ToTitle }}Response struct {
             {{- range $field, $type := $ep.Response }}
-            {{ $field | ToTitle }} {{ $type | ToGoType }} `json:"{{ $field }}"`
+            {{ $field | ToPascal }} {{ $type | ToGoType }} `json:"{{ $field | ToSnake }}"`
             {{- end }}
         }
     {{ end }}
